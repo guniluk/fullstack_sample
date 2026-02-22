@@ -73,12 +73,45 @@
 
 - B(client)> `mv .git ../`
 - move ".gitignore" in B to A
+- move "README md file" in B to A(if exists)
+- git commit & push(at A folder)
+  > `git add .`<br>
+  > `git commit -m "~~~"`<br>
+  > `git push`
 
-### DB(MongoDB)
+### DB
 
-- 1
-- 2
-- 3
+#### MongoDB
+
+- install mongoose at A(fullstack)
+  > A> `npm i mongoose`
+- At MongoDB site, create new project
+  - input project name(fullstack)
+  - change or confirm username, password and click create user
+  - choose connectton method
+  - select Drivers
+  - At mongoDB site, select NETWORK ACCESS, IP Acess List, Add IP Adress.  
+    Access List Entry: 0.0.0.0, Comment:test
+- create ".env" file in A(fullstack)
+  > `MONGO = "Mongodb_site_url"`
+- install "dotenv" at A(fullstack)
+
+  > `npm i dotenv`
+  - Add connection string into "index.js"
+
+    > `import mongoose from 'mongoose';`<br/>
+    > `import dotenv from 'dotenv';`<br/>
+    > `dotenv.config();`<br/>
+
+    > `mongoose`<br/>
+    > `.connect(process.env.MONGO)`<br/>
+    > `.then(() => {`<br/>
+    > `console.log('Connected to MongoDB!');})`<br/>
+    > `.catch((err) => {`<br/>
+    > `console.error('Error connecting to MongoDB:', err);});`
+
+- add to ".gitignore"
+  > .env
 
 # Various syntax
 
@@ -104,7 +137,7 @@
 
 - Code blocks are normally indented four spaces or one tab. When they’re in a list, indent them eight spaces or two tab
 
-- images: ![image](./public/boy1.png)
+- images: ![image](./client/public/boy1.png)
 - code : `print("hello")`
 - link : [google](https://google.com).
 - url and e-mail : <https://www.google.com>
