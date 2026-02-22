@@ -49,9 +49,30 @@
 
 ### Express
 
-- 1
-- 2
-- 3
+- go to A(fullstack)
+- init npm : `npm init -y`
+- install express(in A folder)
+  > `npm i express`
+- install nodemon : `npm i nodemon -D`
+- modify package.json
+
+  > `"type": "module"`.  
+  > `"scripts": {`.  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`"dev": "nodemon api/index.js",`.  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`"start": "node api/index.js"}`
+
+- create folder C(api)
+- make "index.js" at C folder
+  > `import express from 'express';`.  
+  > `const app = express();`.  
+  > `const port = 3000;`.  
+  > `app.listen(port, () => {`.  
+  > `console.log(`Server is running on port ${port}`) });`
+
+### Change git folder (B → A)
+
+- B(client)> `mv .git ../`
+- move ".gitignore" in B to A
 
 ### DB(MongoDB)
 
