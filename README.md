@@ -151,7 +151,8 @@
 
 - images:
 
-  ![image](client/public/byh.jpg) <img src="client/public/byh.jpg" width="57" alt="boy">
+![image](client/public/byh.jpg)
+![Image](https://github.com/user-attachments/assets/af165e4b-b509-4425-a77e-1521621eea5f)
 
 - code : `print("hello")`
 - link : [google](https://google.com).
