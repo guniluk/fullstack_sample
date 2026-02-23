@@ -7,44 +7,53 @@
 - install react at B(client) folder  
   A> `npm create vite@latest B`
 - A> `cd B`
-- B> install tailwind
-  - search 'tailwind vite' in google
-  - select 'Installing Tailwind CSS with vite' site
+<hr/>
+- B> install tailwind as below procedure
+
+  - search 'tailwind vite' in google<br/>
+  - select 'Installing Tailwind CSS with vite' site<br/>
   - confirm 'using Vite' is selected, and follow the steps in order
-- B> organize the existing files
+  <hr/>
+
+- B> organize the existing files.
   - delete: App.css, public/vite.svg, src/assets/react.svg
   - change: App.jsx
-- B> backup to git repository
+  <hr/>
+
+- B> backup to git repository.
 
   > git init.  
   > git add .  
   > git commit -m "first commit".
-  - go to github
-  - (github)create new repository
-  - copy command lines and execute command at terminal(B folder)
-  - see the git push result at github repository
 
-- route & create pages
-  - install library
+- go to github site
+  - create new repository
+- copy command lines and execute command at terminal(B folder)
+- see the git push result at github site repository
+<hr/>
+- route & create pages(B folder). 
+
+  - install library 
     > `npm i react-router-dom`
   - create "pages" folder and make pages(Home and etc)
   - modify app.jsx
     > - `import { BrowserRouter, Routes, Route } from 'react-router-dom';`
     > - `import Home from './pages/Home';`.  
     >   `<BrowserRouter>`.  
-    >   ` <Routes>`  
-    >    `  <Route path="/" element={<Home />} />`.  
-    >    `</Routes>`.  
+    >   &nbsp;&nbsp;` <Routes>`  
+    >   &nbsp;&nbsp;&nbsp;&nbsp; `  <Route path="/" element={<Home />} />`.  
+    >   &nbsp;&nbsp; `</Routes>`.  
     >   `</BrowserRouter>`
-- create "components" folder and make components(Header and etc)
+
+- create "components" folder and make components(Header.jsx and etc)
   - modify app.jsx (include "Header" component and etc)
   - modify Header.jsx (apply tailwind css)
   - navigate pages using Link.
-    > `import { Link } from 'react-router-dom';`.  
-    > &nbsp;&nbsp;`<Link to="/">`.  
+    > `import { Link } from 'react-router-dom';`  
+    > &nbsp;&nbsp;`<Link to="/">`  
     > &nbsp;&nbsp;&nbsp;&nbsp;`<li className="hidden sm:inline text-slate-700 hover:underline">`.  
-    >  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`Home`.  
-    >  &nbsp;&nbsp;&nbsp;&nbsp;`</li>`.  
+    >  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`Home`  
+    >  &nbsp;&nbsp;&nbsp;&nbsp;`</li>`  
     > &nbsp;&nbsp;`</Link>`
 
 ### 2.Express
@@ -68,6 +77,27 @@
   > `const port = 3000;`.  
   > `app.listen(port, () => {`.  
   > `console.log(`Server is running on port ${port}`) });`
+  <hr/>
+- create routes folder and route file(user.route.js)
+
+  > `import express from 'express';`<br/>
+  > `import { test } from '../controllers/user.controller.js';`<br/>
+  > `const router = express.Router();`<br/>
+  > `router.get('/test', test);`<br/>
+  > `export default router;`<br/>
+
+  <hr/>
+
+- create controllers folder and controller file(user.controller.js)
+
+  > `export const test = (req, res) => {`<br/>
+  > &nbsp;&nbsp;`res.json({ message: 'Test API route working!' });`<br/>
+  > `};`
+
+- connect routes to index.js(or server.js)
+  > `import userRouter from './routes/user.route.js';`<br/>
+  > `app.use('/api/users', userRouter);`<br/>
+  <hr/>
 
 ### 3.Change git folder (B → A)
 
@@ -95,7 +125,7 @@
 - install "dotenv" at A(fullstack)
 
   > `npm i dotenv`
-  - Add connection string into "index.js"
+- Add connection string into "index.js"
 
     > `import mongoose from 'mongoose';`<br/>
     > `import dotenv from 'dotenv';`<br/>
@@ -110,6 +140,25 @@
 
 - add to ".gitignore"
   > .env
+  <hr/>
+- create "models" folder and make schema and model
+  > `import mongoose from 'mongoose';`<br/>
+  > `const userSchema = new mongoose.Schema(`<br/>
+  > `{`<br/>
+  > &nbsp; &nbsp;`username: {`<br/>
+  > &nbsp; &nbsp;&nbsp; &nbsp;`type: String,`<br/>
+  > &nbsp; &nbsp;&nbsp; &nbsp;`required: true,`<br/>
+  > &nbsp; &nbsp;&nbsp; &nbsp;`unique: true,`<br/>
+  > &nbsp; &nbsp;`},`<br/>
+  > &nbsp; &nbsp;`password: {`<br/>
+  > &nbsp; &nbsp;&nbsp; &nbsp;`type: String,`<br/>
+  > &nbsp; &nbsp;&nbsp; &nbsp;`required: true,`<br/>
+  > &nbsp; &nbsp;`},`<br/>
+  > `},`<br/>
+  > &nbsp; &nbsp;`{ timestamps: true },`<br/>
+  > `);`<br/>
+  > `const User = mongoose.model('User', userSchema);`<br/>
+  > `export default User;`
 
 ### 5.work at various PCs(A → A and B)
 
