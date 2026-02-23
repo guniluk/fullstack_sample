@@ -1,6 +1,6 @@
-# Fullstack procedure
+# 【Fullstack procedure】
 
-### React
+### 1.React
 
 - create folder A(fullstack)
   - open the folder A using vscode
@@ -47,7 +47,7 @@
     >  &nbsp;&nbsp;&nbsp;&nbsp;`</li>`.  
     > &nbsp;&nbsp;`</Link>`
 
-### Express
+### 2.Express
 
 - go to A(fullstack)
 - init npm : `npm init -y`
@@ -69,7 +69,7 @@
   > `app.listen(port, () => {`.  
   > `console.log(`Server is running on port ${port}`) });`
 
-### Change git folder (B → A)
+### 3.Change git folder (B → A)
 
 - B(client)> `mv .git ../`
 - move ".gitignore" in B to A
@@ -79,9 +79,7 @@
   > `git commit -m "~~~"`<br>
   > `git push`
 
-### DB
-
-#### MongoDB
+### 4.MongoDB
 
 - install mongoose at A(fullstack)
   > A> `npm i mongoose`
@@ -113,7 +111,21 @@
 - add to ".gitignore"
   > .env
 
-# Various syntax
+### 5.work at various PCs(A → A and B)
+
+- B> git clone "github_address" (Just once at first)
+  - project_dir> npm install(each package.json)
+  - project_dir> make and code .env
+  - coding
+  - git add, commit, and push
+- afterwards both A and B do the next process
+  - git pull origin main
+  - git add .
+  - git commit -m "work of A(or B)"
+  - git push origin main
+- always "git push" when get off work, always "git pull" when start work
+
+# ✓ Various syntax
 
 - can use HTML, but why? <h3 style="color:red">hello</h3>
 - To create new line, end a line with two or more spaces, and then
