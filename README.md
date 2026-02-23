@@ -149,7 +149,7 @@
 
 - Code blocks are normally indented four spaces or one tab. When they’re in a list, indent them eight spaces or two tab
 
-- images: ![image](client/public/boy1.png)
+- images: ![image](client/public/byh.jpg)
 - code : `print("hello")`
 - link : [google](https://google.com).
 - url and e-mail : <https://www.google.com>
