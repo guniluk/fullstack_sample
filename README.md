@@ -2,8 +2,7 @@
 
 ## ◼︎ React
 
-- (1) create project folder A(fullstack)  
-  - open the folder A using vscode  
+- (1) create project folder A(fullstack)   
 - (2) install react at B(client) folder  
     - A> `npm create vite@latest B`  
     - A> `cd B`  
@@ -11,13 +10,13 @@
 
 - (3) B> install tailwind as below procedure(optional)         
   - search 'tailwind vite' in google   
-  - select 'Installing Tailwind CSS with vite' site   
+  - select 'Installing Tailwind CSS with vite' site(https://tailwindcss.com)   
   - confirm 'using Vite' is selected, and follow the steps in order  
   <hr/>
 
 - (4) B> organize the existing files   
   - delete: App.css, public/vite.svg, src/assets/react.svg  
-  - change: App.jsx  
+  - change: App.jsx(in "src" folder)  
   <hr/>
 
 - (5) B> backup to git repository   
@@ -31,20 +30,20 @@
   - see the git push result at github site repository  
 <hr/>  
 
-- (23) route & create pages(B folder)    
+- (23) route & create pages(B folder(client))    
   - install library   
     > `npm i react-router-dom`  
-  - create "pages" folder and make pages(Home and etc)  
+  - create "pages" folder in "src" folder of B(client), and make pages(Home, etc)  
   - modify app.jsx  
-    > - `import { BrowserRouter, Routes, Route } from 'react-router-dom';`  
-    > - `import Home from './pages/Home';`    
-    >   `<BrowserRouter>`    
-    >   &nbsp;&nbsp;` <Routes>`    
-    >   &nbsp;&nbsp;&nbsp;&nbsp; `  <Route path="/" element={<Home />} />`    
-    >   &nbsp;&nbsp; `</Routes>`    
-    >   `</BrowserRouter>`  
+    > `import { BrowserRouter, Routes, Route } from 'react-router-dom';`  
+    > `import Home from './pages/Home';`    
+    > `<BrowserRouter>`    
+    > &nbsp;&nbsp;` <Routes>`    
+    > &nbsp;&nbsp;&nbsp;&nbsp; `  <Route path="/" element={<Home />} />`    
+    > &nbsp;&nbsp; `</Routes>`    
+    > `</BrowserRouter>`  
 
-- (24) create "components" folder and make components(Header.jsx)  
+- (24) create "components" folder in "src" folder of B(client), and make components(Header.jsx)  
   - apply tailwind css    
   - navigate using "Link"  
     > `import { Link } from 'react-router-dom';`    
@@ -54,12 +53,12 @@
     >  &nbsp;&nbsp;&nbsp;&nbsp;`</li>`   
     > &nbsp;&nbsp;`</Link>`    
 - (25) modify app.jsx (include "Header" component)  
-    > `<BrowserRouter>`  
-    > `<Header />`  
-    > `<Routes>`  
-    > `<Route path="/" element={} />`   
-    > `</Routes>`   
-    > `</BrowserRouter>`  
+  > `<BrowserRouter>`  
+  > `<Header />`  
+  > `<Routes>`  
+  > `<Route path="/" element={} />`   
+  > `</Routes>`   
+  > `</BrowserRouter>`  
 
 ## ◼︎ Express   
 - (6) go to project folder A(fullstack)  
@@ -67,7 +66,7 @@
 - (8) install express(in A folder)  
   > A>`npm i express`  
 - (9) install nodemon : A>`npm i nodemon -D`   
-  - if globally installed before, this process doesn't need  
+  - if globally installed before, it doesn't need to install again  
 - (10) modify package.json    
   > `"type": "module"`   
   > `"scripts": {`    
@@ -157,7 +156,7 @@
   > `export default User;`   
 <hr/>   
 
-### (27) auth(signup) procedure (server/Insomnia/MongoDB)  
+### (27) auth(signup) procedure (server(C)/Insomnia/MongoDB)  
 - make auth.route.js in routes folder  
   > `import express from 'express';`  
   > `import { signup } from '../controllers/auth.controller.js';`    
@@ -191,7 +190,7 @@
 	  `}`  
 - in Mongo DB site, check new user is created   
 - install bcryptjs at A(fullstack) for password encryption  
-  > `npm i bcryptjs`  
+  > A> `npm i bcryptjs`  
 - modify auth.controller.js  
   > `import bcryptjs from 'bcryptjs';`  
   > `export const signup = async (req, res) => {`  
@@ -200,6 +199,91 @@
   > `const newUser = new User({ username, email, password: hashedPassword });`   
 - send POST request at Insomnia for other user, and in Mongo DB site, check new user is created with encrypted password  
 <hr/>  
+
+### (28) middleware handling errors (Server(C))
+- add middleware to handle errors in index.js
+  > `app.use((err, req, res, next) => {`  
+  > `const statusCode = err.statusCode || 500;`  
+  > `const message = err.message || 'Internal Server Error';`  
+  > `return res.status(statusCode).json({`  
+  > &nbsp;&nbsp;`success: false,`  
+  > &nbsp;&nbsp;`statusCode,`  
+  > &nbsp;&nbsp;`message,`  
+  > &nbsp;&nbsp;`});`  
+  > `});`  
+- modify controller file(auth.controller.js)  
+  > `export const signup = async (req, res, next) => {`  
+  > &nbsp;&nbsp;`catch (err) {`  
+  > &nbsp;&nbsp;`next(err);`  
+  > &nbsp;&nbsp;`}`  
+  > `};`  
+<hr/>  
+
+### (29) handling errors manually if needed (Server (C))
+- make "utils" folder and "error.js"
+> `export const errorHandler = (statusCode, message) => {`  
+>  `const error = new Error();`  
+>  `error.message = message;`  
+>  `error.statusCode = statusCode;`  
+>  `return error;`  
+> `};`  
+- use if needed in controller or other file  
+
+
+### (30) auth(sign-up) procedure  (Client (B))  
+- make form in "SignUp.jsx" page  
+  > `import { useState } from 'react';`  
+  > `export default function SignUp() {`  
+  > `const [formData, setFormData] = useState({});`  
+  <br/>
+  > `const handleChange = (e) => {`  
+  > &nbsp;&nbsp;`setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));`  
+  > `};`  
+  <br/>  
+  > `const handleSubmit = async (e) => {`  
+  > &nbsp;&nbsp;`e.preventDefault();`  
+  > &nbsp;&nbsp;`const res = await fetch('/api/auth/signup', {`  
+  > &nbsp;&nbsp;   `method: 'POST',`  
+  > &nbsp;&nbsp;   `headers: {`  
+  > &nbsp;&nbsp;     `'Content-Type': 'application/json',`  
+  > &nbsp;&nbsp;   `},`  
+  > &nbsp;&nbsp;   `body: JSON.stringify(formData),`  
+  > &nbsp;&nbsp; `});`  
+  > &nbsp;&nbsp; `const data = await res.json();`  
+  > &nbsp;&nbsp; `setFormData({});`  
+  > &nbsp;&nbsp;`};`  
+  >  <br/>  
+  > `return (`  
+  > `<div>`  
+  >&nbsp;&nbsp;    `<h1>Sign Up</h1>`  
+  >&nbsp;&nbsp;    `<form. onSubmit={handleSubmit}>`  
+  >&nbsp;&nbsp;      `<input id="username" onChange={handleChange} />`  
+  >&nbsp;&nbsp;      `<input id="email" onChange={handleChange} />`  
+  >&nbsp;&nbsp;      `<input id="password" onChange={handleChange} />`  
+  >&nbsp;&nbsp;      `<button> Sign Up </button>`  
+  >&nbsp;&nbsp;    `</form>`  
+  > `</div>`  
+  > `);`  
+  > `}`   
+
+- set proxy at vite.config.js  
+> `server: {`  
+> &nbsp;&nbsp;`proxy: {`  
+> &nbsp;&nbsp;&nbsp;&nbsp;`'/api': {`  
+> &nbsp;&nbsp;&nbsp;&nbsp;`target: 'http://localhost:3000',`  
+> &nbsp;&nbsp;&nbsp;&nbsp;`secure: false,`  
+> &nbsp;&nbsp;&nbsp;&nbsp;`},`  
+> &nbsp;&nbsp;`},`  
+> `},`  
+
+- run both frontend and backend :   
+  > /B/C> `npm run dev`
+- send Form message at Fronted(B)  and check if it is created in the DB  
+<hr/>  
+
+
+
+
 
 
 
