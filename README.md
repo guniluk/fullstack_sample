@@ -1,5 +1,5 @@
 # 【Fullstack procedure】
-
+#### ✭Folder : A(project), B(client), C(api or server)  
 ## ◼︎ React
 
 - (1) create project folder A(fullstack)   
@@ -234,12 +234,10 @@
 - make form in "SignUp.jsx" page  
   > `import { useState } from 'react';`  
   > `export default function SignUp() {`  
-  > `const [formData, setFormData] = useState({});`  
-  <br/>
+  > `const [formData, setFormData] = useState({});`<br/>
   > `const handleChange = (e) => {`  
   > &nbsp;&nbsp;`setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));`  
-  > `};`  
-  <br/>  
+  > `};`<br/>  
   > `const handleSubmit = async (e) => {`  
   > &nbsp;&nbsp;`e.preventDefault();`  
   > &nbsp;&nbsp;`const res = await fetch('/api/auth/signup', {`  
@@ -251,8 +249,7 @@
   > &nbsp;&nbsp; `});`  
   > &nbsp;&nbsp; `const data = await res.json();`  
   > &nbsp;&nbsp; `setFormData({});`  
-  > &nbsp;&nbsp;`};`  
-  >  <br/>  
+  > &nbsp;&nbsp;`};`<br/>  
   > `return (`  
   > `<div>`  
   >&nbsp;&nbsp;    `<h1>Sign Up</h1>`  
@@ -277,11 +274,89 @@
 > `},`  
 
 - run both frontend and backend :   
-  > /B/C> `npm run dev`
+  > B(client)> `npm run dev`
+  > A(server, not C)> `npm run dev`
 - send Form message at Fronted(B)  and check if it is created in the DB  
 <hr/>  
 
+### (31) loading & error handling (Client (B) page(signUp.jsx))  
+- set disalbed attribute when loading, and set error message and display when error. when normal, navigate to sign-in page 
+  > ...
+  > `import { Link, useNavigate } from 'react-router-dom';`  
+  > `export default function SignUp() {`  
+  > `const [error, setError] = useState(null);`  
+  > `const [loading, setLoading] = useState(false);`  
+  > `const navigate = useNavigate();`  
+  > ...
+  > `const handleSubmit = async (e) => {`  
+    > `e.preventDefault();`  
+    > `try {`  
+    >  &nbsp;&nbsp;`setLoading(true);`  
+    >  &nbsp;&nbsp;`const res = await fetch('/api/auth/signup', {`  
+    >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`method: 'POST', headers: {'Content-Type': 'application/json',},`  
+    >    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`body: JSON.stringify(formData)});`  
+    >  `const data = await res.json();`  
+    >  `if (data.success === false) {`  
+    >    &nbsp;&nbsp;&nbsp;&nbsp;`setLoading(false);`  
+    >    &nbsp;&nbsp;&nbsp;&nbsp;`setError(data.message);`  
+    >    &nbsp;&nbsp;&nbsp;&nbsp;`return;}`  
+    >  `setLoading(false);`  
+    >  `setError(null);`
+    >  `setFormData({});`  
+    >  `navigate('/sign-in');`  
+    >`} catch (error) {`  
+    >  &nbsp;&nbsp;&nbsp;&nbsp;`setLoading(false);`  
+    >  &nbsp;&nbsp;&nbsp;&nbsp;`setError(error.message);`  
+    >`}`  
+  > `return (`  
+  > ...
+  >   &nbsp;&nbsp;&nbsp;&nbsp;`<button disabled={loading}>`  
+  >     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; `{loading ? 'Signing up...' : 'Sign Up'}`  
+  >  &nbsp;&nbsp;&nbsp;&nbsp; `</button>`  
+  >   &nbsp;&nbsp;&nbsp;&nbsp; `{error && (<div> {error} </div>)}`  
+  > ...
+  >`)`  
+  > `}`  
 
+### (32) sign-in procedure (api(C))  
+- install "jsonwebtoken" at A(fullstack)  
+  > A> `npm i jsonwebtoken`  
+- add sign-in function in "auth.controller.js"  
+  > ...  
+  > `import { errorHandler } from '../utils/error.js';`  
+  > `import jwt from 'jsonwebtoken';`  
+  > ...
+  > `export const signin = async (req, res, next) => {`  
+  > `const { email, password } = req.body;`  
+  > `try {`  
+  > &nbsp;&nbsp; `const validUser = await User.findOne({ email });`  
+  > &nbsp;&nbsp; `if (!validUser) {`  
+  > &nbsp;&nbsp; `  return next(errorHandler(404, 'User not found!'));}`  
+  > &nbsp;&nbsp; `const isPasswordValid = bcryptjs.compareSync(password, validUser.password);`  
+  > &nbsp;&nbsp; `if (!isPasswordValid) {`  
+  > &nbsp;&nbsp; `  return next(errorHandler(401, 'Invalid password!'));}`  
+  > &nbsp;&nbsp; `const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);`  
+  > &nbsp;&nbsp; `const { password: pass, ...rest } = validUser._doc;`  
+  > &nbsp;&nbsp; `res.cookie('access_token', token, {httpOnly: true,`  
+  > &nbsp;&nbsp; `    expire: new Date(Date.now() + 1000 * 60 * 60 * 24)})`  
+  > &nbsp;&nbsp; `   .status(200).json(rest);`  
+  >  `} catch (error) {next(error);}`  
+  > `}`  
+- add 'signin" route to "auth.route.js"  
+  >`...`  
+  >`import { signup, signin } from '../controllers/auth.controller.js';`  
+  >`router.post('/signin', signin);`  
+  >`...`  
+- there no coding in "index.js", because middleware is already included
+  > `import authRouter from './routes/auth.route.js';`  
+  > `app.use('/api/auth', authRouter);`  
+- at insomnia, try login and see the result(check if password is not included, and token is created )  
+  > POST : lcalhost:3000/api/auth/signin  
+  > BODY(JSON) :  
+  > {"email" : "bbb@bbb.com", "password" : "bbb"}  
+<hr/>  
+
+### (33) 
 
 
 

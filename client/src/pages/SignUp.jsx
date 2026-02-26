@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function SignUp() {
   const [formData, setFormData] = useState({});
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
@@ -12,16 +15,29 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // console.log(formData);
-    const res = await fetch('/api/auth/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    });
-    const data = await res.json();
-    console.log(data);
-    setFormData({});
+    try {
+      setLoading(true);
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        setLoading(false);
+        setError(data.message);
+        return;
+      }
+      setLoading(false);
+      setError(null);
+      setFormData({});
+      navigate('/sign-in');
+    } catch (error) {
+      setLoading(false);
+      setError(error.message);
+    }
   };
 
   return (
@@ -55,8 +71,11 @@ export default function SignUp() {
           onChange={handleChange}
           value={formData.password || ''}
         />
-        <button className="bg-slate-700 text-white p-3 rounded-lg hover:opacity-90 uppercase font-semibold disabled:opacity-65">
-          Sign Up
+        <button
+          disabled={loading}
+          className="bg-slate-700 text-white p-3 rounded-lg hover:opacity-90 uppercase font-semibold disabled:opacity-65"
+        >
+          {loading ? 'Signing up...' : 'Sign Up'}
         </button>
       </form>
       <div className="flex gap-2 justify-center mt-5 text-center text-sm text-gray-500">
@@ -65,6 +84,11 @@ export default function SignUp() {
           <span className="text-blue-500 hover:underline">Sign In</span>
         </Link>
       </div>
+      {error && (
+        <div className="bg-red-100 text-red-700 p-3 rounded-lg mt-5 max-w-md mx-auto">
+          {error}
+        </div>
+      )}
     </div>
   );
 }
