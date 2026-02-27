@@ -356,9 +356,92 @@
   > {"email" : "bbb@bbb.com", "password" : "bbb"}  
 <hr/>  
 
-### (33) 
-
-
+### (33) make signin.jsx page in client(B), much like signUp.jsx(copy and modify)  
+### (34)  Redux : use received data(`res.json(rest)`) from "auth.controller.js"(server) at every Client(B) pages    
+- install redux toolkit at B(client)  
+  > B> `npm i @reduxjs/toolkit react-redux`  
+- create folder and file: src/redux/store.js  
+- code store.js  
+  > `import { configureStore } from '@reduxjs/toolkit';`  
+  > `export const store = configureStore({`  
+  > `reducer: {},`  
+  > `middleware: (getDefaultMiddleware) =>`  
+  > `getDefaultMiddleware({serializableCheck: false,}),`  
+  > `});`  
+- modify "main.jsx"   
+  > `import { Provider } from 'react-redux';`  
+  > `import { store } from './redux/store';`  
+  > ...  
+  > `<Provider store={store}>`  
+  > `<App />`  
+  > `</Provider>`    
+- create a Redux Static Slice  
+   - make folder("user") in "redux" folder  
+   - make "userSlice.js" in "user"  
+    > `import { createSlice } from '@reduxjs/toolkit';`    
+    > `const initialState = {`  
+    > &nbsp;&nbsp;`currentUser: null,`  
+    > &nbsp;&nbsp;`error: null,`  
+    > &nbsp;&nbsp;`loading: false,`  
+    > `};`  
+    > `export const userSlice = createSlice({`  
+    > `name: 'user',`  
+    > `initialState,`  
+    > `reducers: {`  
+    > `singnInStart: (state) => {state.loading = true;},`  
+    > `signInSuccess: (state, action) => {`  
+    > &nbsp;&nbsp;`state.currentUser = action.payload;`  
+    > &nbsp;&nbsp;`state.loading = false;`  
+    > &nbsp;&nbsp;`state.error = null;`  
+    > `},`  
+    > `signInFailure: (state, action) => {`  
+    > &nbsp;&nbsp;`state.error = action.payload;`  
+    > &nbsp;&nbsp;`state.loading = false;`  
+    > `},`  
+    > `},`  
+    > `});`  
+    > `export const { singnInStart, signInSuccess, signInFailure } = userSlice. actions;`  
+    > `export default userSlice.reducer;`  
+- modify store.js  
+  > ...  
+  > `import userReducer from './user/userSlice';`  
+  > ...  
+    `reducer: {user: userReducer,},`  
+  > ...  
+- apply dispatch to pages (signin.jsx)
+  > ...  
+  > `import { useDispatch, useSelector } from 'react-redux';`  
+  > `import {signInStart, signInSuccess, signInFailure,} from '../redux/user/userSlice';`  
+  > `export default function SignIn() {`  
+  > ...  
+  > // const [error, setError] = useState(null);  
+  > // const [loading, setLoading] = useState(false);  
+  > `const { error, loading } = useSelector((state) => state.user);`  
+  > ...  
+  > `const dispatch = useDispatch();`  
+  > ...  
+  > `const handleSubmit = async (e) => {`  
+  >  ...  
+  >  `try {`  
+  >    // setLoading(true);  
+  >    `dispatch(signInStart());`  
+  >    ...  
+  >    `if (data.success === false) {`  
+  >      // setLoading(false);  
+  >      // setError(data.message);  
+  >      `dispatch(signInFailure(data.message));`  
+  >      `return;`  
+  >    `}`  
+  >    // setLoading(false);  
+  >    // setError(null);  
+  >    `dispatch(signInSuccess(data));`  
+  >    ...  `
+  >  `} catch (error) {`  
+  >    // setLoading(false);  
+  >    // setError(error.message);
+  >    `dispatch(signInFailure(error.message));`  
+  >  `}`  
+  > `};`    
 
 
 
