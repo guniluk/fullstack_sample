@@ -357,7 +357,7 @@
 <hr/>  
 
 ### (33) make signin.jsx page in client(B), much like signUp.jsx(copy and modify)  
-### (34)  Redux : use received data(`res.json(rest)`) from "auth.controller.js"(server) at every Client(B) pages    
+### (34)  Redux(globally (data) state managing, substitute for useContext) : possibly use received data(`res.json(rest)`) from "auth.controller.js"(server) at every Client(B) pages    
 - install redux toolkit at B(client)  
   > B> `npm i @reduxjs/toolkit react-redux`  
 - create folder and file: src/redux/store.js  
@@ -435,14 +435,43 @@
   >    // setLoading(false);  
   >    // setError(null);  
   >    `dispatch(signInSuccess(data));`  
-  >    ...  `
-  >  `} catch (error) {`  
-  >    // setLoading(false);  
-  >    // setError(error.message);
+  >    ...  
+  >  `} catch (error) {`   
+  >    `// setLoading(false);`    
+  >    `// setError(error.message);`   
   >    `dispatch(signInFailure(error.message));`  
   >  `}`  
   > `};`    
 
+### (35)  make Redux persist (retain data after page is refreshed)  
+- install redux-persist at B(client)  
+  > B> `npm i redux-persist`  
+- modify "store.js"  
+  > ...  
+  > `import { combineReducers, configureStore } from '@reduxjs/toolkit';`  
+  > `import { persistReducer, persistStore } from 'redux-persist';`  
+  > `import storage from 'redux-persist/lib/storage';`  
+  > `const rootReducer = combineReducers({user: userReducer,});`  
+  > `const persistConfig = {`  
+  > `key: 'root', storage, version: 1,};`  
+  > `const persistedReducer = persistReducer(persistConfig, rootReducer);`  
+  > `export const store = configureStore({`  
+  > ` reducer: persistedReducer,`  
+  > ...  
+  > `});`  
+  > ...  
+  > `export const persistor = persistStore(store);`  
+- modify "main.jsx"  
+  > ...  
+  > `import { persistor, store } from './redux/store.js';`  
+  > `import { PersistGate } from 'redux-persist/integration/react';`  
+  > `createRoot(document.getElementById('root')).render(`  
+  > `<Provider store={store}>`  
+  > ` <PersistGate loading={null} persistor={persistor}>`  
+  > `   <App />`  
+  > ` </PersistGate>`  
+  > `</Provider>,`  
+  > `);`  
 
 
 
