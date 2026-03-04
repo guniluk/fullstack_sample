@@ -473,7 +473,34 @@
   > `</Provider>,`  
   > `);`  
 
-
+### (36)  make profile page private(only show profile page when signed in)  
+- modify Header.jsx (show image when signin, else "sign-in" message)  
+  > ...  
+  > `import { useSelector } from 'react-redux';`  
+  > `export default function Header() {`  
+  > `const { currentUser } = useSelector((state) => state.user);`  
+  > `return (`  
+  > `...`  
+  > `<Link to="/profile">`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`{currentUser ? (<img src="byh.jpg"/>) : (<li>Sign In</li>)}`  
+  > `</Link>`  
+  > ...  
+- create PrivateRoute.jsx  
+  >`import { useSelector } from 'react-redux';`  
+  >`import { Outlet, Navigate } from 'react-router-dom';`  
+  >`export default function PrivateRoute() {`  
+  >`const { currentUser } = useSelector((state) => state.user);`  
+  >`return currentUser ? <Outlet /> : <Navigate to="/sign-in" />;}`  
+- modify App.jsx()  
+  > ...  
+  > `import PrivateRoute from './components/PrivateRoute';`
+  > `export default function App() {`  
+  > `return (`  
+  > ...  
+  > `<Route element={<PrivateRoute />}>`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`<Route path="/profile" element={<Profile />} />`  
+  > `</Route>`  
+  > ...  
 
 
 # 【ETC】   
