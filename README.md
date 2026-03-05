@@ -502,7 +502,7 @@
   > `</Route>`  
   > ...  
 
-### (37)  update user profile  
+### (37)  update user profile at server(C)  
 - enable parsing cookie in index.js  
   > ...  
   > `import cookieParser from 'cookie-parser';`  
@@ -548,6 +548,74 @@
   > `};`  
 - using insomnia, test update user
   > POST : localhost:3000/api/users/update/user_id
+
+### (38)  update user profile at client(B)  
+- create update user reducer in userSlice.js  
+  > `export const userSlice = createSlice({`  
+  > ...  
+  > `reducers: {`  
+  > ...  
+  > `updateUserStart: (state) => {`  
+  > &nbsp;&nbsp;`state.loading = true;},`  
+  > `updateUserSuccess: (state, action) => {`  
+  > &nbsp;&nbsp;`state.currentUser = action.payload;`  
+  > &nbsp;&nbsp;`state.loading = false;`  
+  > &nbsp;&nbsp;`state.error = null;},`  
+  > `updateUserFailure: (state, action) => {`  
+  > &nbsp;&nbsp;`state.error = action.payload;`  
+  > &nbsp;&nbsp;`state.loading = false;},`  
+  > ...  
+- add change, submit handler in profile.jsx  
+  > ...  
+  > `import {updateUserStart, updateUserSuccess, updateUserFailure,} from '../redux/user/userSlice';`  
+  > `import { useDispatch } from 'react-redux';`  
+  > ...  
+  > `export default function Profile() {`  
+  > `const { currentUser, loading, error } = useSelector((state) => state.user);`  
+  > `const dispatch = useDispatch();`  
+  > `const [formData, setFormData] = useState({});`  
+  > `const [updateSuccess, setUpdateSuccess] = useState(false);`  
+  > `const handleChange = (e) => {`  
+  > &nbsp;&nbsp;`setFormData({ ...formData, [e.target.id]: e.target.value });};`  
+  > `const handleSubmit = async (e) => {`  
+  > &nbsp;&nbsp;`e.preventDefault();`  
+  > &nbsp;&nbsp;`try {`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`dispatch(updateUserStart());`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`const res = await fetch('/api/users/update/${currentUser._id}', {`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`method: 'POST', headers: {'Content-Type': 'application/json',},`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`body: JSON.stringify(formData),});`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`const data = await res.json();`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`if (data.success === false) {`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`dispatch(updateUserFailure(data.message));`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`return;}`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`dispatch(updateUserSuccess(data));`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`setUpdateSuccess(true);`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`setFormData({});`  
+  > &nbsp;&nbsp;`} catch (error) {`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`dispatch(updateUserFailure(error.message));}`  
+  > `};`  
+  > `return (`  
+    &nbsp;&nbsp;`<div>`  
+    &nbsp;&nbsp;`<form onSubmit={handleSubmit}>`  
+  > &nbsp;&nbsp;...  
+  > &nbsp;&nbsp;`<input`  
+    &nbsp;&nbsp;&nbsp;&nbsp;`type="text"`  
+    &nbsp;&nbsp;&nbsp;&nbsp;`id="username"`  
+    &nbsp;&nbsp;&nbsp;&nbsp;`placeholder="Username"`  
+    &nbsp;&nbsp;&nbsp;&nbsp;`defaultValue={currentUser.username}`  
+    &nbsp;&nbsp;&nbsp;&nbsp;`onChange={handleChange}/>`  
+  >&nbsp;&nbsp;...  
+  > &nbsp;&nbsp;`<button`  
+    &nbsp;&nbsp;&nbsp;&nbsp;`disabled={loading}`  
+  >  &nbsp;&nbsp;&nbsp;&nbsp;...  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`{loading ? 'Loading' : 'User update'}`  
+  > &nbsp;&nbsp;`</button>`  
+  > &nbsp;&nbsp;`</form>`  
+  > &nbsp;&nbsp;...  
+- using insomnia, change and update profile, check Mongo DB
+
+
+
 
 # 【ETC】   
 ### ✓ work at various PCs(A → A and B)   

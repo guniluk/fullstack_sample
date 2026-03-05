@@ -2,20 +2,56 @@
 
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+} from '../redux/user/userSlice';
+import { useDispatch } from 'react-redux';
 
 export default function Profile() {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   // const fileRef = useRef(null);
   const [formData, setFormData] = useState({});
+  // console.log(formData);
+  const [updateSuccess, setUpdateSuccess] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(`/api/users/update/${currentUser._id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(updateUserFailure(data.message));
+        return;
+      }
+      dispatch(updateUserSuccess(data));
+      setUpdateSuccess(true);
+      setFormData({});
+    } catch (error) {
+      dispatch(updateUserFailure(error.message));
+    }
+    // console.log(formData);
+  };
+
+  // console.log(formData);
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
-      <form className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* <input
           type="file"
           accept="image/*"
@@ -53,10 +89,10 @@ export default function Profile() {
           onChange={handleChange}
         />
         <button
-          type="button"
+          disabled={loading}
           className="bg-slate-700 text-white p-3 rounded-lg hover:opacity-95 uppercase font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Update Profile
+          {loading ? 'Loading' : 'User update'}
         </button>
       </form>
       <div className="flex justify-between mt-4">
@@ -66,6 +102,20 @@ export default function Profile() {
         <span className="text-red-700 cursor-pointer font-bold hover:underline">
           Logout
         </span>
+      </div>
+      <div>
+        {error && (
+          <div className="bg-red-100 text-red-700 p-3 rounded-lg mt-5 max-w-md mx-auto">
+            {error}
+          </div>
+        )}{' '}
+      </div>
+      <div>
+        {updateSuccess && (
+          <div className="bg-green-100 text-green-700 p-3 rounded-lg mt-5 max-w-md mx-auto">
+            User updated successfully
+          </div>
+        )}
       </div>
     </div>
   );
