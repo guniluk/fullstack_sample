@@ -502,6 +502,52 @@
   > `</Route>`  
   > ...  
 
+### (37)  update user profile  
+- enable parsing cookie in index.js  
+  > ...  
+  > `import cookieParser from 'cookie-parser';`  
+  > ...  
+  > `app.use(cookieParser());`  
+- check if authenticated or not(create middleware verifyUser.js in utils folder)  
+  > `import { errorHandler } from './error.js';`  
+  > `import jwt from 'jsonwebtoken';`  
+  > `export const verifyToken = (req, res, next) => {`  
+  > `const token = req.cookies.access_token;`  
+  > `if (!token) return next(errorHandler(401, 'Unauthenticated!'));`  
+  > `jwt.verify(token, process.env.JWT_SECRET, (err, user) => {`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`if (err) return next(errorHandler(403, 'Token is not valid!'));`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`req.user = user;`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`next();`
+  > `}); };`
+- create verified user update router in user.route.js  
+  > `import { updateUser } from '../controllers/user.controller.js';`  
+  > `import { verifyToken } from '../utils/verifyUser.js';`  
+  > ...  
+  > `router.post('/update/:id', verifyToken, updateUser);`  
+- update user DB in user.controller.js  
+  > `import bcryptjs from 'bcryptjs';`  
+  > `import User from '../models/user.model.js';`  
+  > `import { errorHandler } from '../utils/error.js';`  
+  > `export const updateUser = async (req, res, next) => {`  
+  > `if (req.user.id !== req.params.id) {`  
+  > &nbsp;&nbsp;`return next(errorHandler(401, 'You can update only your account!'));}`  
+  > `try {`  
+  > &nbsp;&nbsp;`if (req.body.password) {`  
+  > &nbsp;&nbsp;`req.body.password = bcryptjs.hashSync(req.body.password, 10);}`  
+  > `const updatedUser = await User.findByIdAndUpdate(`  
+  > &nbsp;&nbsp;`req.params.id,`  
+  > &nbsp;&nbsp;`{`  
+  > &nbsp;&nbsp;`$set: {`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`username: req.body.username,`  
+  >&nbsp;&nbsp;&nbsp;&nbsp; `email: req.body.email,`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`password: req.body.password, },},`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`{ new: true },);`  
+  > `const { password, ...rest } = updatedUser._doc;`  
+  > `res.status(200).json(rest);`  
+  > `} catch (error) {next(error);}`  
+  > `};`  
+- using insomnia, test update user
+  > POST : localhost:3000/api/users/update/user_id
 
 # 【ETC】   
 ### ✓ work at various PCs(A → A and B)   
