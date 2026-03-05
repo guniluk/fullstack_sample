@@ -33,7 +33,6 @@ export const signin = async (req, res, next) => {
     if (!isPasswordValid) {
       return next(errorHandler(401, 'Invalid password!'));
     }
-
     const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET, {
       expiresIn: '1d',
     });
@@ -46,6 +45,15 @@ export const signin = async (req, res, next) => {
       })
       .status(200)
       .json(rest);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const signout = async (req, res, next) => {
+  try {
+    res.clearCookie('access_token');
+    res.status(200).json({ message: 'User logged out successfully!' });
   } catch (error) {
     next(error);
   }

@@ -667,6 +667,53 @@
   > &nbsp;&nbsp;`};`  
   > ...
 
+### (41) signout at server(C)  
+- add signout router in auth.route.js  
+  > `import { signup, signin, signout } from '../controllers/auth.controller.js';`  
+  > ...  
+  > `router.get('/signout', signout);`    
+  > ...  
+- add signout function in auth.controller.js  
+  > ...  
+  > `export const signout = async (req, res, next) => {`  
+  > `try {`  
+  > &nbsp;&nbsp;`res.clearCookie('access_token');`  
+  > &nbsp;&nbsp;`res.status(200).json({ message: 'User logged out successfully!' });`  
+  > `} catch (error) {`  
+  > &nbsp;&nbsp;`next(error);}`  
+  > `};`  
+
+### (42) signout at client(B)  
+- create signout reducer in userSlice.js  
+  > ...  
+  > `signoutStart: (state) => {`  
+  > &nbsp;&nbsp;`state.loading = true;},`  
+  > `signoutSuccess: (state) => {`  
+  > &nbsp;&nbsp;`state.currentUser = null;`  
+  > &nbsp;&nbsp;`state.loading = false;`  
+  > &nbsp;&nbsp;`state.error = null;},`  
+  > `signoutFailure: (state, action) => {`  
+  > &nbsp;&nbsp;`state.error = action.payload;`  
+  > &nbsp;&nbsp;`state.loading = false;},`  
+  > ...
+- add signout handler in profile.jsx  
+  > ...  
+  > `import {signoutStart, signoutSuccess, signoutFailure,} from '../redux/user/userSlice';`  
+  > `export default function Profile() {`  
+  > ...  
+  > `const handleSignout = async () => {`  
+  > `try {`  
+  > &nbsp;&nbsp;`dispatch(signoutStart());`  
+  > &nbsp;&nbsp;`const res = await fetch('/api/auth/signout', {method: 'GET',});`  
+  > &nbsp;&nbsp;`const data = await res.json();`  
+  > &nbsp;&nbsp;`if (data.success === false) {`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`dispatch(signoutFailure(data.message));`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`return;}`  
+  > &nbsp;&nbsp;`dispatch(signoutSuccess(data));`  
+  > `} catch (error) {`  
+  > &nbsp;&nbsp;`dispatch(signoutFailure(error.message));`  
+  > `}`  
+  > ...  
 
 
 
