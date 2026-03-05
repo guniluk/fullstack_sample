@@ -614,6 +614,62 @@
   > &nbsp;&nbsp;...  
 - using insomnia, change and update profile, check Mongo DB
 
+### (39)  delete user profile at server(C)  
+- create delete router in user.route.js  
+  > `import {deleteUser} from '../controllers/user.controller.js';`  
+  > ...  
+  > `router.delete('/delete/:id', verifyToken, deleteUser);`  
+- delete user DB in user.controller.js  
+  > ...  
+  > `export const deleteUser = async (req, res, next) => {`  
+  > `if (req.user.id !== req.params.id) {`  
+  > &nbsp;&nbsp;`return next(errorHandler(401, 'You can delete only your account!')); }`  
+  > `try {`  
+  > &nbsp;&nbsp;`await User.findByIdAndDelete(req.params.id);`  
+  > &nbsp;&nbsp;`res.clearCookie('access_token');`  
+  > &nbsp;&nbsp;`res.status(200).json({ message: 'User deleted successfully!' });`  
+  > `} catch (error) {`  
+  > `next(error); } };`  
+
+### (40)  delete user profile at client(B)  
+- create delete user reducer in userSlice.js  
+  > ...  
+  > `export const userSlice = createSlice({`  
+  > `name: 'user', initialState,`  
+  > `reducers: {`  
+  > ...  
+  > `deleteUserStart: (state) => {`  
+  > &nbsp;&nbsp;`state.loading = true;},`  
+  > `deleteUserSuccess: (state) => {`  
+  > &nbsp;&nbsp;`state.currentUser = null;`  
+  > &nbsp;&nbsp;`state.loading = false;`  
+  > &nbsp;&nbsp;`state.error = null;},`  
+  > `deleteUserFailure: (state, action) => {`  
+  > &nbsp;&nbsp;`state.error = action.payload;`  
+  > &nbsp;&nbsp;`state.loading = false;},`  
+  > ...
+- add delete handler in profile.jsx  
+  > ...  
+  > `import {deleteUserStart, deleteUserSuccess, deleteUserFailure,} from '../redux/user/userSlice';`  
+  > `export default function Profile() {`  
+  > ...
+  > `const handleDelete = async () => {`  
+  > &nbsp;&nbsp;`try {`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`dispatch(deleteUserStart());`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`const res = await fetch('/api/users/delete/${currentUser._id}', {method: 'DELETE',});`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`const data = await res.json();`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`if (data.success === false) {`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`dispatch(deleteUserFailure(data.message));`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`return;}`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`dispatch(deleteUserSuccess(data));`  
+  > &nbsp;&nbsp;`} catch (error) {`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`dispatch(deleteUserFailure(error.message));}`  
+  > &nbsp;&nbsp;`};`  
+  > ...
+
+
+
+
 
 
 
