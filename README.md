@@ -703,9 +703,46 @@
 the end of signup, login, logout 
 <hr/>   
 
-### (43) 
+### (43) Add listing api route at server(C) and MongoDB  
+- create listing route, listing.route.js in routes folder   
+  >`import express from 'express';`  
+  >`import { createListing } from '../controllers/listing.controller.js';`  
+  >`import { verifyToken } from '../utils/verifyUser.js';`  
+  >`const router = express.Router();`  
+  >`router.post('/create', verifyToken, createListing);`  
+  >`export default router;`  
+- add router in index.js  
+  > ...  
+  > `import listingRouter from './routes/listing.route.js';`  
+  > ...  
+  > `app.use('/api/listings', listingRouter);`  
+- create listing controller in listing.controller.js(controllers folder)  
+  > `import Listing from '../models/listing.model.js';`  
+  > `export const createListing = async (req, res, next) => {`  
+  > `try {`  
+  > &nbsp;&nbsp;`const listing = await Listing.create(req.body);`  
+  > &nbsp;&nbsp;`res.status(201).json(listing);`  
+  > `} catch (error) {`         
+  > &nbsp;&nbsp;`next(error);`  
+  > `}};`   
+- create listing model in listing.model.js(models folder)  
+  > `import mongoose from 'mongoose';`  
+  > `const listingSchema = new mongoose.Schema(`  
+  > `{`  
+  > `name: {`  
+  > `type: String,`  
+  > `required: true,`  
+  > `},`  
+  > `...}`  
+  > `{ timestamps: true } );`  
+  > `const Listing = mongoose.model('Listing', listingSchema);`  
+  > `export default Listing;`  
+- using insomnia, create new listing
+  > POST : localhost:3000/api/listing/create (logged in first)
+- check MongoDB if the listing is created
+<hr/>
 
-
+### (44) 
 
 
 # 【ETC】   
