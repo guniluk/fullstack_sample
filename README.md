@@ -742,8 +742,29 @@ the end of signup, login, logout
 - check MongoDB if the listing is created
 <hr/>
 
-### (44) 
+### (44) add listing page at client(B)  
+- add link button in profile.jsx  
+  > `import { Link } from 'react-router-dom';`  
+  > ...  
+  > `<form>`  
+  > ...
+  > `<Link to="/create-listing">`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`Create Listing`  
+  > `</Link>`  
+  > `</form>`  
+  > ...
+- add route in app.jsx as a member of ProviteRoute  
+  > ...  
+  > `import CreateListing from './pages/CreateListing';`  
+  > ...
+  > `<Route element={<PrivateRoute />}>`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`<Route path="/create-listing" element={<CreateListing />} />`  
+  > `</Route>`    
+  > ...
+- create CreateListing.jsx  
+  - make UI for needed data
 
+### (45) 
 
 # 【ETC】   
 ### ✓ work at various PCs(A → A and B)   
