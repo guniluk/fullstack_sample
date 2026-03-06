@@ -6,19 +6,13 @@
 - (2) install react at B(client) folder  
     - A> `npm create vite@latest B`  
     - A> `cd B`  
-<hr/>   
-
 - (3) B> install tailwind as below procedure(optional)         
   - search 'tailwind vite' in google   
   - select 'Installing Tailwind CSS with vite' site(https://tailwindcss.com)   
   - confirm 'using Vite' is selected, and follow the steps in order  
-  <hr/>
-
 - (4) B> organize the existing files   
   - delete: App.css, public/vite.svg, src/assets/react.svg  
   - change: App.jsx(in "src" folder)  
-  <hr/>
-
 - (5) B> backup to git repository   
   - check & add "node_modules" to ".gitignore"  
   > git init   
@@ -28,7 +22,7 @@
   - create new repository  
   - copy command lines and execute command at terminal(B folder)  
   - see the git push result at github site repository  
-<hr/>  
+<hr/>
 
 - (23) route & create pages(B folder(client))    
   - install library   
@@ -80,15 +74,12 @@
   > `const port = 3000;`   
   > `app.listen(port, () => {`    
   > `console.log(`Server is running on port ${port}`) });`  
-  <hr/>  
 - (13) create routes folder and route file(user.route.js) in C folder(api)   
   > `import express from 'express';`   
   > `import { test } from '../controllers/user.controller.js';`   
   > `const router = express.Router();`   
   > `router.get('/test', test);`   
-  > `export default router;`   
-
-  <hr/>   
+  > `export default router;`     
 - (14) create controllers folder and controller file(user.controller.js) in C folder(api)   
   > `export const test = (req, res) => {`   
   > &nbsp;&nbsp;`res.json({ message: 'Test API route working!' });`   
@@ -97,8 +88,6 @@
 - (15) connect routes to index.js     
   > `import userRouter from './routes/user.route.js';`   
   > `app.use('/api/users', userRouter);`  
-  <hr/>
-
 #### (16) Change git folder (B → A)  
 - B(client)> `mv .git ../`  
 - move ".gitignore" in B to A     
@@ -108,6 +97,7 @@
   > `git add .`   
   > `git commit -m "~~~"`   
   > `git push`  
+<hr />
 
 ## ◼︎ MongoDB  
 - (17) install mongoose at A(fullstack)   
@@ -132,7 +122,6 @@
     > `console.log('Connected to MongoDB!');})`  
     > `.catch((err) => {`  
     > `console.error('Error connecting to MongoDB:', err);});`  
-
 - (22) add ".env" to ".gitignore"  
   > .env  
   <hr/>  
@@ -153,8 +142,8 @@
   > &nbsp; &nbsp;`{ timestamps: true },`   
   > `);`   
   > `const User = mongoose.model('User', userSchema);`   
-  > `export default User;`   
-<hr/>   
+  > `export default User;`     
+<hr/>
 
 ### (27) auth(signup) procedure (server(C)/Insomnia/MongoDB)  
 - make auth.route.js in routes folder  
@@ -179,7 +168,6 @@
 - connect auth.route.js to index.js   
   > `import authRouter from './routes/auth.route.js';`  
   > `app.use('/api/auth', authRouter);`  
-
 - send POST request at Insomnia
   > POST : localhost:3000/api/auth/signup  
   > BODY(JSON)  
@@ -217,8 +205,6 @@
   > &nbsp;&nbsp;`next(err);`  
   > &nbsp;&nbsp;`}`  
   > `};`  
-<hr/>  
-
 ### (29) handling errors manually if needed (Server (C))
 - make "utils" folder and "error.js"
 > `export const errorHandler = (statusCode, message) => {`  
@@ -228,8 +214,6 @@
 >  `return error;`  
 > `};`  
 - use if needed in controller or other file  
-
-
 ### (30) auth(sign-up) procedure  (Client (B))  
 - make form in "SignUp.jsx" page  
   > `import { useState } from 'react';`  
@@ -262,7 +246,6 @@
   > `</div>`  
   > `);`  
   > `}`   
-
 - set proxy at vite.config.js  
 > `server: {`  
 > &nbsp;&nbsp;`proxy: {`  
@@ -272,13 +255,10 @@
 > &nbsp;&nbsp;&nbsp;&nbsp;`},`  
 > &nbsp;&nbsp;`},`  
 > `},`  
-
 - run both frontend and backend :   
   > B(client)> `npm run dev`
   > A(server, not C)> `npm run dev`
 - send Form message at Fronted(B)  and check if it is created in the DB  
-<hr/>  
-
 ### (31) loading & error handling (Client (B) page(signUp.jsx))  
 - set disalbed attribute when loading, and set error message and display when error. when normal, navigate to sign-in page 
   > ...
@@ -317,6 +297,7 @@
   > ...
   >`)`  
   > `}`  
+<hr/>
 
 ### (32) sign-in procedure (api(C))  
 - install "jsonwebtoken" at A(fullstack)  
@@ -354,9 +335,9 @@
   > POST : lcalhost:3000/api/auth/signin  
   > BODY(JSON) :  
   > {"email" : "bbb@bbb.com", "password" : "bbb"}  
-<hr/>  
+### (33) make signin.jsx page in client(B), much like signUp.jsx(copy and modify) 
+<hr/>
 
-### (33) make signin.jsx page in client(B), much like signUp.jsx(copy and modify)  
 ### (34)  Redux(globally (data) state managing, substitute for useContext) : possibly use received data(`res.json(rest)`) from "auth.controller.js"(server) at every Client(B) pages    
 - install redux toolkit at B(client)  
   > B> `npm i @reduxjs/toolkit react-redux`  
@@ -472,6 +453,7 @@
   > ` </PersistGate>`  
   > `</Provider>,`  
   > `);`  
+<hr/>
 
 ### (36)  make profile page private(only show profile page when signed in)  
 - modify Header.jsx (show image when signin, else "sign-in" message)  
@@ -501,6 +483,7 @@
   > &nbsp;&nbsp;&nbsp;&nbsp;`<Route path="/profile" element={<Profile />} />`  
   > `</Route>`  
   > ...  
+<hr/>
 
 ### (37)  update user profile at server(C)  
 - enable parsing cookie in index.js  
@@ -613,6 +596,7 @@
   > &nbsp;&nbsp;`</form>`  
   > &nbsp;&nbsp;...  
 - using insomnia, change and update profile, check Mongo DB
+<hr/>
 
 ### (39)  delete user profile at server(C)  
 - create delete router in user.route.js  
@@ -666,6 +650,7 @@
   > &nbsp;&nbsp;&nbsp;&nbsp;`dispatch(deleteUserFailure(error.message));}`  
   > &nbsp;&nbsp;`};`  
   > ...
+<hr/>
 
 ### (41) signout at server(C)  
 - add signout router in auth.route.js  
@@ -714,8 +699,11 @@
   > &nbsp;&nbsp;`dispatch(signoutFailure(error.message));`  
   > `}`  
   > ...  
+<hr/>
+the end of signup, login, logout 
+<hr/>   
 
-
+### (43) 
 
 
 
