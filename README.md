@@ -715,7 +715,7 @@ the end of signup, login, logout
   > ...  
   > `import listingRouter from './routes/listing.route.js';`  
   > ...  
-  > `app.use('/api/listings', listingRouter);`  
+  > `app.use('/api/listing', listingRouter);`  
 - create listing controller in listing.controller.js(controllers folder)  
   > `import Listing from '../models/listing.model.js';`  
   > `export const createListing = async (req, res, next) => {`  
@@ -763,6 +763,8 @@ the end of signup, login, logout
   > ...
 - create CreateListing.jsx  
   - make UI for needed data
+  - make functionality
+  - when succeded, navigate to list page
 
 ### (45) 
 
