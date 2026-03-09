@@ -766,7 +766,28 @@ the end of signup, login, logout
   - make functionality
   - when succeded, navigate to list page
 
-### (45) 
+### (45) get a certain user's listings at server(C)  
+- modify user.route.js  
+  > ...   
+  > `import {getUserListings} from '../controllers/user.controller.js';`  
+  > ...  
+  > `router.get('/listings/:id', verifyToken, getUserListings);`  
+  > ...  
+- modify user.controller.js  
+  > ...  
+  > `import Listing from '../models/listing.model.js';`   
+  > ...  
+  > `export const getUserListings = async (req, res, next) => {`  
+  > `if (req.user.id !== req.params.id) {`  
+  > `return next(errorHandler(401, 'You can get only your listings!'));}`  
+  > `try {`  
+  > `const listings = await Listing.find({ userRef: req.params.id });`  
+  > `res.status(200).json(listings);`  
+  > `} catch (error) {next(error);}`  
+  > `};`  
+<hr/>
+
+### (46) 
 
 # 【ETC】   
 ### ✓ work at various PCs(A → A and B)   
