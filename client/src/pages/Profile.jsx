@@ -17,12 +17,14 @@ import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 export default function Profile() {
-  const { currentUser, loading, error } = useSelector((state) => state.user);
+  const { currentUser, error, loading } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   // const fileRef = useRef(null);
   const [formData, setFormData] = useState({});
   // console.log(formData);
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [showListingsError, setShowListingsError] = useState(false);
+  const [userListings, setUserListings] = useState([]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -85,6 +87,22 @@ export default function Profile() {
       dispatch(signoutSuccess(data));
     } catch (error) {
       dispatch(signoutFailure(error.message));
+    }
+  };
+
+  const handleShowListings = async () => {
+    try {
+      setShowListingsError(false);
+      const res = await fetch(`/api/users/listings/${currentUser._id}`);
+      const data = await res.json();
+      if (data.success === false) {
+        setShowListingsError(true);
+        return;
+      }
+      setUserListings(data);
+    } catch (error) {
+      setShowListingsError(true);
+      console.log(error);
     }
   };
 
@@ -169,6 +187,38 @@ export default function Profile() {
           </div>
         )}
       </div>
+      <button
+        onClick={handleShowListings}
+        className="text-green-700 w-full p-3 rounded-lg hover:opacity-85 uppercase font-semibold cursor-pointer"
+      >
+        Show Listing
+      </button>
+      <p>{showListingsError && 'Something went wrong'}</p>
+      {userListings.length > 0 &&
+        userListings.map((listing) => (
+          <div
+            className="flex mt-2 border-b border-gray-300 p-3 justify-between items-center"
+            key={listing._id}
+          >
+            <Link
+              className="text-sm hover:underline flex-1"
+              to={`/listing/${listing._id}`}
+            >
+              <p className="font-semibold text-slate-600">{listing.name}</p>
+            </Link>
+            <p className="text-sm text-slate-500 truncate max-w-[20ch]">
+              {listing.description}
+            </p>
+            <div className="flex gap-2 ml-4">
+              <button className="w-15 text-white border border-amber-700 bg-amber-700 rounded-sm p-1 hover:opacity-85 pointer-cursor uppercase text-sm">
+                Delete
+              </button>
+              <button className="w-14 border border-green-700 bg-green-700 text-white rounded-sm p-1 hover:opacity-85 pointer-cursor uppercase text-sm">
+                Edit
+              </button>
+            </div>
+          </div>
+        ))}
     </div>
   );
 }
