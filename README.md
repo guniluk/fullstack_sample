@@ -787,7 +787,49 @@ the end of signup, login, logout
   > `};`  
 <hr/>
 
-### (46) 
+### (46) delete user listing at server(C) and client(B)  
+- modify listing.route.js(at server)  
+  > ...  
+  > `import {deleteListing} from '../controllers/listing.controller.js';`  
+  > ...  
+  > `router.delete('/delete/:id', verifyToken, deleteListing);`  
+  > ...  
+- modify listing.controller.js(at server)  
+  > ...  
+  > `export const deleteListing = async (req, res, next) => {`  
+  > `try {`  
+  > &nbsp;&nbsp;`const listing = await Listing.findById(req.params.id);`  
+  > &nbsp;&nbsp;`if (!listing) {return next(errorHandler(404, 'Listing not found!'));}`  
+  > &nbsp;&nbsp;`if (listing.userRef.toString() !== req.user.id) {`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`return next(errorHandler(401, 'You can delete only your listings!'));}`  
+  > &nbsp;&nbsp;`await Listing.findByIdAndDelete(req.params.id);`  
+  > &nbsp;&nbsp;`res.status(200).json({ message: 'Listing deleted successfully!' });`  
+  > `} catch (error) {next(error);}`  
+  > `};`  
+- modify profile.jsx (at client)  
+  > ...   
+  > `const handleListingDelete = async (listingId) => {`  
+  > `try {`  
+  > &nbsp;&nbsp;`const res = await fetch('/api/listing/delete/${listingId}',`   
+  > &nbsp;&nbsp;&nbsp;&nbsp;`{method: 'DELETE',});`  
+  > &nbsp;&nbsp;`const data = await res.json();`  
+  > &nbsp;&nbsp;`if (data.success === false) {console.log(data.message);`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`return;}`  
+  > &nbsp;&nbsp;`setUserListings((prev) =>`  
+  > &nbsp;&nbsp;`prev.filter((listing) => listing._id !== listingId),);`  
+  > &nbsp;&nbsp;`handleShowListings();`  
+  > `} catch (error) {console.log(error);}`  
+  > `};`  
+  > ... 
+  > `<button`  
+  > &nbsp;&nbsp;`onClick={() => handleListingDelete(listing._id)}>`  
+  > &nbsp;&nbsp;`Delete`  
+  > `</button>`  
+  > ...  
+<hr/>
+
+### (47)
+
 
 # 【ETC】   
 ### ✓ work at various PCs(A → A and B)   
