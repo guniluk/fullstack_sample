@@ -14,9 +14,10 @@ import {
   signoutFailure,
 } from '../redux/user/userSlice';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Profile() {
+  const navigate = useNavigate();
   const { currentUser, error, loading } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   // const fileRef = useRef(null);
@@ -235,7 +236,10 @@ export default function Profile() {
               >
                 Delete
               </button>
-              <button className="w-14 border border-green-700 bg-green-700 text-white rounded-sm p-1 hover:opacity-85 pointer-cursor uppercase text-sm">
+              <button
+                onClick={() => navigate(`/edit-listing/${listing._id}`)}
+                className="w-14 border border-green-700 bg-green-700 text-white rounded-sm p-1 hover:opacity-85 pointer-cursor uppercase text-sm"
+              >
                 Edit
               </button>
             </div>

@@ -828,7 +828,95 @@ the end of signup, login, logout
   > ...  
 <hr/>
 
-### (47)
+### (47) update user listing at server(C) and client(B)  
+- modify listing.route.js(at server)  
+  > ...  
+  > `import { updateListing, getListing} from '../controllers/listing.controller.js';`  
+  > ...  
+  > `router.post('/update/:id', verifyToken, updateListing);`  
+  > `router.get('/get/:id', getListing);`  
+  > ...  
+- modify listing.controller.js(at server)  
+  > ...  
+  > `export const updateListing = async (req, res, next) => {`  
+  > `try {`  
+  > &nbsp;&nbsp;`const listing = await Listing.findById(req.params.id);`  
+  > &nbsp;&nbsp;`if (!listing) {`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`return next(errorHandler(404, 'Listing not found!')); }`  
+  > &nbsp;&nbsp;`if (listing.userRef.toString() !== req.user.id) {`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`return next(errorHandler(401, 'You can delete only your listings!')); }`  
+  > &nbsp;&nbsp;`const updatedListing = await Listing.findByIdAndUpdate(`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`req.params.id,`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`req.body,`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`{ new: true }, );`  
+  > &nbsp;&nbsp;`res.status(200).json(updatedListing);`  
+  > `} catch (error) {`  
+  > `next(error);`  
+  > `} };`  
+  > ... 
+  > ...   
+  > `export const getListing = async (req, res, next) => {`  
+  > `try {`  
+  > `const listing = await Listing.findById(req.params.id);` 
+  > `if (!listing) {`  
+  > `return next(errorHandler(404, 'Listing not found!'));}`  
+  > `res.status(200).json(listing);`  
+  > `} catch (error) {`  
+  > `next(error);`  
+  > `} };`  
+- modify profile.jsx (at client)  
+  > ...  
+  > `<button`  
+  > `onClick={() => navigate(`/edit-listing/${listing._id}`)>`  
+  > `Edit`  
+  > `</button>`  
+  > ...  
+- add route in app.jsx as a member of PrivateRoute  
+  > ...  
+  > `import EditListing from './pages/EditListing';`  
+  > ...  
+  > `<Route element={<PrivateRoute />}>`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`<Route path="/edit-listing/:id" element={<EditListing />} />`  
+  > `</Route>`  
+  > ...   
+- create EditListing.jsx just like CreateListing.jsx but some differences 
+  > ...  
+  > `import {useParams } from 'react-router-dom';`  
+  > `export default function EditListing() {`  
+  > ...
+  > `const params = useParams();`  
+  > ...  
+  > `useEffect(() => {`  
+  > `const fetchListing = async () => {`  
+  > `const listingId = params.id;`  
+  > `const res = await fetch(`/api/listing/get/${listingId}`);`  
+  > `const data = await res.json();`  
+  > `if (data.success === false) {console.log(data.message);`  
+  > `return; }`  
+  > `setFormData(data);`  
+  > `};`  
+  > `fetchListing();},`  
+  > `[params.id]);`    
+  > ...  
+  > ...  
+  > `const handleSubmit = async (e) => {`  
+  > ...  
+  > `const res = await fetch(`/api/listing/update/${params.id}`, {`  
+  > `method: 'POST',`  
+  > `headers: {'Content-Type': 'application/json',},`  
+  > `body: JSON.stringify({ ...formData, userRef: currentUser._id }),});`  
+  > `const data = await res.json();`  
+  > ...  
+  > `navigate(`/listing/${data._id}`);`  
+  > ... 
+<hr/>
+
+### (48) listing one page at server(C) and client(B)  
+
+
+
+
+
 
 
 # 【ETC】   
