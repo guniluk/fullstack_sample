@@ -911,7 +911,16 @@ the end of signup, login, logout
   > ... 
 <hr/>
 
-### (48) listing one page at server(C) and client(B)  
+### (48) detail listing page at client(B)  
+- create route in app.jsx  
+  > ...  
+  > `import Listing from './pages/Listing';`  
+  > ...  
+  > `<Route path="/listing/:listingId" element={<Listing />} />`  
+  > ...   
+- create Listing.jsx, importing useEffect, useState, useParams  
+
+### (49) 
 
 
 

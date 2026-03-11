@@ -31,7 +31,7 @@ export default function EditListing() {
       const res = await fetch(`/api/listing/get/${listingId}`);
       const data = await res.json();
       if (data.success === false) {
-        console.log(data.message);
+        // console.log(data.message);
         return;
       }
       setFormData(data);
@@ -92,7 +92,7 @@ export default function EditListing() {
         body: JSON.stringify({ ...formData, userRef: currentUser._id }),
       });
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       setLoading(false);
       if (data.success === false) {
         setError(data.message);

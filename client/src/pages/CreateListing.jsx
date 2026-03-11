@@ -76,7 +76,7 @@ export default function CreateListing() {
         body: JSON.stringify({ ...formData, userRef: currentUser._id }),
       });
       const data = await res.json();
-      console.log(data);
+      // console.log(data);
       setLoading(false);
       if (data.success === false) {
         setError(data.message);
