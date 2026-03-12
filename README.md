@@ -956,7 +956,51 @@ the end of signup, login, logout
   > `}`  
 <hr/>
 
-### (50)
+### (50) add search api at server(C)  
+- add search router in listing.route.js  
+  > ...  
+  > `import {getListings} from '../controllers/listing.controller.js';`  
+  > ...  
+  > `router.get('/get', getListings);`  
+- add search function in listing.controller.js  
+  > ...  
+  > `export const getListings = async (req, res, next) => {`  
+  > `try {`  
+  > &nbsp;&nbsp;`const limit = parseInt(req.query.limit) || 9;`  
+  > &nbsp;&nbsp;`const startIndex = parseInt(req.query.startIndex) || 0;`  
+  > &nbsp;&nbsp;`let offer = req.query.offer;`  
+  > &nbsp;&nbsp;`if (offer === undefined || offer === 'false') {`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`offer = { $in: [false, true] };}
+  > &nbsp;&nbsp;`let furnished = req.query.furnished;`  
+  > &nbsp;&nbsp;`if (furnished === undefined || furnished === 'false') {`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`furnished = { $in: [false, true] };}`  
+  > &nbsp;&nbsp;`let parking = req.query.parking;`  
+  > &nbsp;&nbsp;`if (parking === undefined || parking === 'false') {`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`parking = { $in: [false, true] };}`  
+  > &nbsp;&nbsp;`let type = req.query.type;`  
+  > &nbsp;&nbsp;`if (type === undefined || type === 'all') {`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`type = { $in: ['sale', 'rent'] };}`  
+  > &nbsp;&nbsp;`const searchTerm = req.query.searchTerm || '';`  
+  > &nbsp;&nbsp;`const sort = req.query.sort || 'createdAt';`  
+  > &nbsp;&nbsp;`const order = req.query.order || 'desc';`  
+  > &nbsp;&nbsp;`const listings = await Listing.find({`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`name: { $regex: searchTerm, $options: 'i' },`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`offer,`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`furnished,`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`parking,`  
+  > &nbsp;&nbsp;&nbsp;&nbsp;`type,})`  
+  > &nbsp;&nbsp;`.sort({ [sort]: order })`  
+  > &nbsp;&nbsp;`.limit(limit)`  
+  > &nbsp;&nbsp;`.skip(startIndex);`  
+  > &nbsp;&nbsp;`return res.status(200).json(listings);`  
+  > `} catch (error) {`  
+  > &nbsp;&nbsp;`next(error);}};`
+- text using insomnia
+<hr/>
+
+### (51)
+
+
 
 
 
