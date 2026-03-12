@@ -920,7 +920,43 @@ the end of signup, login, logout
   > ...   
 - create Listing.jsx, importing useEffect, useState, useParams  
 
-### (49) 
+### (49) add contact message at server(C) and client(B)  
+- add route for getting one user infomation in user.route.js 
+  > ...  
+  > `import {getUser} from '../controllers/user.controller.js';`
+  > ...  
+  > `router.get('/get/:id', verifyToken, getUser);`  
+  > ...  
+- add getUser function in user.controller.js  
+  > ...  
+  > `export const getUser = async (req, res, next) => {`  
+  > `try {`  
+  > &nbsp;&nbsp;`const user = await User.findById(req.params.id);`  
+  > &nbsp;&nbsp;`if (!user) {`  
+  > &nbsp;&nbsp;`return next(errorHandler(404, 'User not found!'));}`  
+  > &nbsp;&nbsp;`const { password, ...rest } = user._doc;`  
+  > &nbsp;&nbsp;`res.status(200).json(rest);`  
+  > `} catch (error) {`  
+  > &nbsp;&nbsp;`next(error);}`  
+  > `};`    
+- add contact message to listing.jsx  
+  > ...
+  > `import { useSelector } from 'react-redux';`  
+  > `import Contact from '../components/Contact';`  
+  > ...  
+  > `const Listing = () => {`  
+  > ...  
+  > `const { currentUser } = useSelector((state) => state.user);`  
+  > `const [contact, setContact] = useState(false);`  
+  > ...  
+  > `{currentUser && currentUser._id !== listing.userRef && !contact && (`  
+  > `<button onClick={() => setContact(true)} Contact Landlord</button>)}`  
+  > `{contact && <Contact listing={listing} />}`  
+  > ...  
+  > `}`  
+<hr/>
+
+### (50)
 
 
 

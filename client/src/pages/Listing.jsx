@@ -1,13 +1,23 @@
 import { useEffect, useState } from 'react';
-import { FaBath, FaBed, FaChair, FaParking } from 'react-icons/fa';
+import {
+  FaBath,
+  FaBed,
+  FaChair,
+  FaLocationArrow,
+  FaParking,
+} from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import Contact from '../components/Contact';
 
 const Listing = () => {
   const params = useParams();
+  const { currentUser } = useSelector((state) => state.user);
   const { listingId } = params;
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [contact, setContact] = useState(false);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -51,15 +61,24 @@ const Listing = () => {
             alt="House"
             className="w-full mb-5 h-75 object-cover"
           />
-          <p className="text-slate-800 font-bold text-lg  bg-blue-100 ">
-            Address: {listing.address}
-          </p>
-          <p className="text-slate-800 font-sans">
+
+          <p className="text-slate-800 font-sans mb-3">
             <span className="font-bold">Description : </span>
             {listing.description}
           </p>
-          <p>
-            <span className="font-bold">Type: </span>For {listing.type}
+          <p className="flex gap-2 align-center text-slate-500 text-1xl">
+            <FaLocationArrow className="text-sm text-slate-500"></FaLocationArrow>
+            Address: {listing.address}
+          </p>
+          <p className="flex gap-5 mb-3">
+            <span className="text-white font-sans bg-red-900 p-2 rounded-lg w-50 text-center">
+              For {listing.type}
+            </span>
+            <span className="text-white font-sans bg-green-800 p-2 rounded-lg w-50 text-center">
+              {listing.discountPrice > 0
+                ? `$${listing.discountPrice.toLocaleString('en-US')} Discount`
+                : 'No Discount'}
+            </span>
           </p>
           {listing.offer && (
             <p className="border-b border-amber-700 pb-2 font-bold text-red-500 block">
@@ -68,7 +87,7 @@ const Listing = () => {
               {(+listing.regularPrice - +listing.discountPrice).toLocaleString(
                 'en-US',
               )}
-              {listing.type === 'rent' ? ' / month (discounted)' : ''}
+              {listing.type === 'rent' ? ' / month' : ''}
             </p>
           )}
           {!listing.offer && (
@@ -99,6 +118,15 @@ const Listing = () => {
               {listing.furnished ? 'Furnished' : 'Not furnished'}
             </li>
           </ul>
+          {currentUser && currentUser._id !== listing.userRef && !contact && (
+            <button
+              onClick={() => setContact(true)}
+              className="w-full bg-slate-800 text-white text-1xl font-bold p-3 rounded-2xl hover:opacity-90 cursor-pointer mt-3"
+            >
+              Contact Landlord
+            </button>
+          )}
+          {contact && <Contact listing={listing} />}
         </div>
       )}
     </main>
