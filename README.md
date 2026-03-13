@@ -998,7 +998,40 @@ the end of signup, login, logout
 - text using insomnia
 <hr/>
 
-### (51)
+### (51) header search form at client(B)  
+- add function in Header.jsx  
+  > `import { Link, useNavigate } from 'react-router-dom';`  
+  > `import { useEffect, useState } from 'react';`  
+  > ...  
+  > `export default function Header() {`  
+  > ...  
+  > `const [searchTerm, setSearchTerm] = useState('');`  
+  > `const navigate = useNavigate();`  
+  > `const handleSubmit = (e) => {`  
+  > `e.preventDefault();`  
+  > `const urlParams = new URLSearchParams(window.location.search);`  
+  > `urlParams.set('searchTerm', searchTerm);`  
+  > `const urlQuery = urlParams.toString();`  
+  > `navigate('/search?${urlQuery}');};`  
+  > `useEffect(() => {`  
+  > `const urlParams = new URLSearchParams(location.search);`  
+  > `const searchTermFromUrl = urlParams.get('searchTerm');`  
+  > `if (searchTermFromUrl) {`  
+  > `setSearchTerm(searchTermFromUrl);} }, []);`  
+  > `return (`  
+  > ...  
+  > `<form onSubmit={handleSubmit}>`  
+  > ...  
+  > `<input`  
+  > &nbsp;&nbsp;`type="text"`  
+  > &nbsp;&nbsp;`placeholder="Search"`  
+  > &nbsp;&nbsp;`value={searchTerm}`  
+  > &nbsp;&nbsp;`onChange={(e) => setSearchTerm(e.target.value)}`  
+  > ...  
+  > `)`  
+<hr /> 
+
+### (52) 
 
 
 

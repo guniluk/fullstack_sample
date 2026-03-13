@@ -75,7 +75,7 @@ const Listing = () => {
               For {listing.type}
             </span>
             <span className="text-white font-sans bg-green-800 p-2 rounded-lg w-50 text-center">
-              {listing.discountPrice > 0
+              {listing.offer && listing.discountPrice > 0
                 ? `$${listing.discountPrice.toLocaleString('en-US')} Discount`
                 : 'No Discount'}
             </span>

@@ -84,12 +84,15 @@ export default function EditListing() {
         return;
       }
       setLoading(true);
+      const submissionData = { ...formData, userRef: currentUser._id };
+      if (!submissionData.offer) submissionData.discountPrice = 0;
+
       const res = await fetch(`/api/listing/update/${params.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ...formData, userRef: currentUser._id }),
+        body: JSON.stringify(submissionData),
       });
       const data = await res.json();
       // console.log(data);
