@@ -958,80 +958,95 @@ the end of signup, login, logout
 
 ### (50) add search api at server(C)  
 - add search router in listing.route.js  
-  > ...  
-  > `import {getListings} from '../controllers/listing.controller.js';`  
-  > ...  
-  > `router.get('/get', getListings);`  
+  ```javascript
+   ...  
+   import {getListings} from '../controllers/listing.controller.js'; 
+   ...  
+   router.get('/get', getListings);
 - add search function in listing.controller.js  
-  > ...  
-  > `export const getListings = async (req, res, next) => {`  
-  > `try {`  
-  > &nbsp;&nbsp;`const limit = parseInt(req.query.limit) || 9;`  
-  > &nbsp;&nbsp;`const startIndex = parseInt(req.query.startIndex) || 0;`  
-  > &nbsp;&nbsp;`let offer = req.query.offer;`  
-  > &nbsp;&nbsp;`if (offer === undefined || offer === 'false') {`  
-  > &nbsp;&nbsp;&nbsp;&nbsp;`offer = { $in: [false, true] };}
-  > &nbsp;&nbsp;`let furnished = req.query.furnished;`  
-  > &nbsp;&nbsp;`if (furnished === undefined || furnished === 'false') {`  
-  > &nbsp;&nbsp;&nbsp;&nbsp;`furnished = { $in: [false, true] };}`  
-  > &nbsp;&nbsp;`let parking = req.query.parking;`  
-  > &nbsp;&nbsp;`if (parking === undefined || parking === 'false') {`  
-  > &nbsp;&nbsp;&nbsp;&nbsp;`parking = { $in: [false, true] };}`  
-  > &nbsp;&nbsp;`let type = req.query.type;`  
-  > &nbsp;&nbsp;`if (type === undefined || type === 'all') {`  
-  > &nbsp;&nbsp;&nbsp;&nbsp;`type = { $in: ['sale', 'rent'] };}`  
-  > &nbsp;&nbsp;`const searchTerm = req.query.searchTerm || '';`  
-  > &nbsp;&nbsp;`const sort = req.query.sort || 'createdAt';`  
-  > &nbsp;&nbsp;`const order = req.query.order || 'desc';`  
-  > &nbsp;&nbsp;`const listings = await Listing.find({`  
-  > &nbsp;&nbsp;&nbsp;&nbsp;`name: { $regex: searchTerm, $options: 'i' },`  
-  > &nbsp;&nbsp;&nbsp;&nbsp;`offer,`  
-  > &nbsp;&nbsp;&nbsp;&nbsp;`furnished,`  
-  > &nbsp;&nbsp;&nbsp;&nbsp;`parking,`  
-  > &nbsp;&nbsp;&nbsp;&nbsp;`type,})`  
-  > &nbsp;&nbsp;`.sort({ [sort]: order })`  
-  > &nbsp;&nbsp;`.limit(limit)`  
-  > &nbsp;&nbsp;`.skip(startIndex);`  
-  > &nbsp;&nbsp;`return res.status(200).json(listings);`  
-  > `} catch (error) {`  
-  > &nbsp;&nbsp;`next(error);}};`
-- text using insomnia
+  ```javascript
+  ...  
+  export const getListings = async (req, res, next) => {  
+    try {  
+      const limit = parseInt(req.query.limit) || 9;  
+      const startIndex = parseInt(req.query.startIndex) || 0;  
+      let offer = req.query.offer;  
+      if (offer === undefined || offer === 'false') {  
+        offer = { $in: [false, true] };}
+      let furnished = req.query.furnished;
+      if (furnished === undefined || furnished === 'false') {  
+        furnished = { $in: [false, true] };}  
+      let parking = req.query.parking; 
+      if (parking === undefined || parking === 'false') {
+        parking = { $in: [false, true] };} 
+      let type = req.query.type; 
+      if (type === undefined || type === 'all') {
+        type = { $in: ['sale', 'rent'] };} 
+      const searchTerm = req.query.searchTerm || '';  
+      const sort = req.query.sort || 'createdAt';  
+      const order = req.query.order || 'desc';  
+      const listings = await Listing.find({  
+        name: { $regex: searchTerm, $options: 'i' },  
+        offer,  
+        furnished,  
+        parking,  
+        type,})  
+      .sort({ [sort]: order })  
+      .limit(limit)  
+      .skip(startIndex);  
+      return res.status(200).json(listings);  
+    } catch (error) {  
+      next(error);}};
+- test using insomnia
 <hr/>
 
 ### (51) header search form at client(B)  
 - add function in Header.jsx  
-  > `import { Link, useNavigate } from 'react-router-dom';`  
-  > `import { useEffect, useState } from 'react';`  
-  > ...  
-  > `export default function Header() {`  
-  > ...  
-  > `const [searchTerm, setSearchTerm] = useState('');`  
-  > `const navigate = useNavigate();`  
-  > `const handleSubmit = (e) => {`  
-  > `e.preventDefault();`  
-  > `const urlParams = new URLSearchParams(window.location.search);`  
-  > `urlParams.set('searchTerm', searchTerm);`  
-  > `const urlQuery = urlParams.toString();`  
-  > `navigate('/search?${urlQuery}');};`  
-  > `useEffect(() => {`  
-  > `const urlParams = new URLSearchParams(location.search);`  
-  > `const searchTermFromUrl = urlParams.get('searchTerm');`  
-  > `if (searchTermFromUrl) {`  
-  > `setSearchTerm(searchTermFromUrl);} }, []);`  
-  > `return (`  
-  > ...  
-  > `<form onSubmit={handleSubmit}>`  
-  > ...  
-  > `<input`  
-  > &nbsp;&nbsp;`type="text"`  
-  > &nbsp;&nbsp;`placeholder="Search"`  
-  > &nbsp;&nbsp;`value={searchTerm}`  
-  > &nbsp;&nbsp;`onChange={(e) => setSearchTerm(e.target.value)}`  
-  > ...  
-  > `)`  
+  ```javascript
+  ...  
+  import { Link, useNavigate } from 'react-router-dom';  
+  import { useEffect, useState } from 'react';  
+  ...  
+  export default function Header() {  
+  ...  
+  const [searchTerm, setSearchTerm] = useState('');  
+  const navigate = useNavigate();  
+  const handleSubmit = (e) => {  
+    e.preventDefault();  
+    const urlParams = new URLSearchParams(window.location.search);  
+    urlParams.set('searchTerm', searchTerm);  
+    const urlQuery = urlParams.toString();  
+    navigate('/search?${urlQuery}');};  
+    useEffect(() => {  
+      const urlParams = new URLSearchParams(location.search);  
+      const searchTermFromUrl = urlParams.get('searchTerm');  
+      if (searchTermFromUrl) {  
+      setSearchTerm(searchTermFromUrl);} }, []);  
+  return (  
+    ...  
+    <form onSubmit={handleSubmit}>  
+    ...  
+    <input  
+      type="text"  
+      placeholder="Search"  
+      value={searchTerm}  
+      onChange={(e) => setSearchTerm(e.target.value)}  
+    ...  
+  ) }
 <hr /> 
 
-### (52) 
+### (52) add search page at client(B)  
+- add route in app.jsx
+  ```javascript
+  ...  
+  import Search from './pages/Search';  
+  ...  
+  <Route path="/search" element={<Search />} />  
+  ...
+- create Search.jsx  
+
+### (53) add more page view at client(B)  
+
 
 
 
